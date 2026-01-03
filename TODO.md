@@ -1,2 +1,9 @@
-1. Gravity and friction/drag currently the player is floating or does not stop
-2. Collision Detection and Response: currently players walks straight through walls and the floor 
+1. Implement an Inventory System using the TriggerEnter events to pick up items.
+
+2. Add AI Pathfinding using the Spatial Grid to avoid walls.
+
+3. Build a Serialization System to save the Position and Health of all entities to a file.
+
+4. Location systems
+
+5. expand to weapon system
