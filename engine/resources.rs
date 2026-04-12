@@ -35,7 +35,8 @@ pub struct PhysicsSettings {
 
 #[derive(Resource)]
 pub struct CollisionPairs {
-    // TODO
+    // Stores pairs of entities that are currently colliding
+    pub pairs: Vec<(Entity, Entity)>,
 }
 
 // Spatial partitioning grid for optimizing collision detection
@@ -47,7 +48,7 @@ pub struct SpatialGrid {
 
 impl SpatialGrid {
     pub fn clear(&mut self) { self.cells.clear(); }
-    pub fn insert_entity(&mut self, Entity, pos: &Position, hit: &Hitbox) {
+    pub fn insert_entity(&mut self, entity: Entity, pos: &Position, hit: &Hitbox) {
         let min = (
             (pos.x / self.cell_size). floor() as i32,
             (pos.y / self.cell_size). floor() as i32,

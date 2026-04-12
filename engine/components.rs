@@ -88,6 +88,8 @@ impl Default for StepConfig {
 pub struct Friction {
     pub coefficient: f32,
 }
+
+// Triggers and events
 #[derive(Component)]
 pub struct Trigger;
 #[derive(Component, Default)]
@@ -109,6 +111,9 @@ pub struct OnTriggerStay {
     pub target_entity: Entity,
 }
 
+
+// Collision groups and layers
+
 #[derive(Component)]
 pub struct CollisionGroups {
     pub memberships: u32, // current layers this entity belongs to
@@ -121,13 +126,20 @@ impl CollisionGroups {
     }
 }
 
+// Health and lifeline
+
 #[derive(Component)]
 pub struct Health {
     pub current: f32,
     pub max: f32,
     pub invulnerable: bool,
 }
+#[derive(Component)]
+pub struct Lifetime {
+    pub remaining_seconds: f32,
+}
 
+// Damage and knockback
 #[derive(Component)]
 pub struct DamageResistance {
     pub physical: f32,
@@ -150,7 +162,69 @@ pub struct DamageRequest {
     pub damage_type: DamageType,
 }
 
+#[derive(Component)]
+pub struct DamageEvent {
+    pub target: Entity,
+    pub amount: f32,
+    pub damage_type: DamageType,
+}
+#[derive(Component)]
+pub struct Knockback {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+#[derive(Component)]
+pub struct KnockbackResistance {
+    pub value: f32, // 0.0 to 1.0, where 1.0 means no knockback taken
+}
 
+// animation and effects
+enum AnimationState {
+    Idle,
+    Walk,
+    Run,
+    Dash,
+    Jump,
+    Fall,
+    Attack,
+    Die,
+}
+
+#[derive(Component)]
+pub struct AnimationController {
+    pub name: String,
+    pub state: AnimationState,
+    pub blend_time: f32,
+}
+#[derive(Component)]
+pub struct ParticleEffect {
+    pub name: String,
+    pub duration: f32,
+    pub looped: bool,
+}
+// Sprinting
+#[derive(Component)]
+pub struct Sprinting {
+    pub is_sprinting: bool,
+}
+
+#[derive(Component)]
+pub struct SprintConfig {
+    pub sprint_multiplier: f32,
+}
+
+// walking and running speeds
+#[derive(Component)]
+pub struct MovementSpeed {
+    pub base: f32,
+    pub sprint_multiplier: f32,
+}
+
+#[derive(Component)]
+pub struct Mass {
+    pub value: f32,
+}
 
 #[derive(Component)]
 pub struct MainCamera;

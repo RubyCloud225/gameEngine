@@ -188,7 +188,17 @@ pub fn physics_prediction_systems(
                     // Trigger Enter Event
                     commands.spawn(OnTriggerEnter { target_entity: other });
                     tracker.current_frame.insert(other);
+                } {
+                    // Trigger Exit Event
+                    commands.spawn(OnTriggerExit { target_entity: other });
+                    tracker.last_frame.insert(other);
+                }{
+                    // Trigger Stay Event
+                    commands.spawn(OnTriggerStay { target_entity: other });
+                    tracker.current_frame.insert(other);
+                    tracker.last_frame.insert(other);
                 }
+                
                 // only do maths if the mask matches
                 if my_group.can_collide(&t_group.memberships) {
                     // handle collision resolution here if needed
@@ -230,6 +240,44 @@ pub fn physics_prediction_systems(
                     // Simple resolution: stop horizontal movement
                     target_x = pos.x;
                     target_z = pos.z;
+
+                    // Health reduction on collision with damage sources could be handled here
+                    commands.spawn(DamageRequest {
+                        target: entity,
+                        amount: 10.0, // Example damage value
+                        damage_type: DamageType::Physical,
+                    });
+
+                    // Stumble effect: reduce Velocity and add camera shake
+                    vel.x *= 0.5; // Reduce horizontal speed by 50%
+                    vel.z *= 0.5;
+                    trauma.value = (trauma.value + 0.3).min(1.0); // Add trauma for camera shake
+                }
+
+                // Y-axis step up logic (only if we collided horizontally)
+                if test_overlap(
+                    pos.x, target_y, pos.z, hit,
+                    w_pos.x, w_pos.y, w_pos.z, w_hit,
+                ) {
+                    // Collision detected on y axis, we are grounded
+                    if vel.y < 0.0 {
+                        target_y = w_pos.y + w_hit.max.1 - hit.min.1 + EPSILON;
+                        grounded.is_grounded = true;
+                        grounded.platform = Some(other_entity);
+                    } else {
+                        target_y = w_pos.y + w_hit.min.1 - hit.max.1 - EPSILON;
+                    }
+                    vel.y = 0.0;
+
+                    commands.spawn(DamageRequest {
+                        target: entity,
+                        amount: 5.0, // Example damage value for hitting the ceiling
+                        damage_type: DamageType::Physical,
+                    });
+
+                    vel.x *= 0.5; // Reduce horizontal speed by 50% on vertical collision as well
+                    vel.z *= 0.5;
+                    trauma.value = (trauma.value + 0.2).min(1.0); // Add trauma for camera shake
                 }
                 // attempt step up - check if there is space aboce
                 let step_y = pos.y + step_cfg.max_height;
@@ -347,6 +395,38 @@ pub fn cleanup_trigger_events_system(
     }
 }
 
+// Health and damage system
+// Animation and effects system
+fn animation_task_graph_system(
+    mut query: Query<(&Velocity, &Grounded, &mut AnimationController)>,
+    task_graph: Res<AnimationTaskGraph>,
+) {
+    for (velocity, grounded, mut anim) in &mut query {
+        anim.blend_time = if grounded.0 {
+            0.1 // Faster blend when grounded
+        } else {
+            0.3 // Slower blend when in air for more dramatic effect
+        };
+        anim.state = if let Some(platform_entity) = grounded.platform {
+            // If grounded on a platform, we might want a different animation
+            AnimationState::IdleOnPlatform
+        } else if velocity.x.abs() > 0.1 || velocity.z.abs() > 0.1 {
+            // If moving horizontally, play running animation
+            AnimationState::Running
+        } else {
+            // Default to idle animation
+            AnimationState::Idle
+        };
+        // Schedule animation blend task
+        task_graph.schedule(AnimationBlendTask {
+            entity: query.entity(),
+            target_state: anim.state,
+            blend_time: anim.blend_time,
+        });
+    }
+}
+
+// Moving Platform System
 pub fn moving_platform_system(
     time: Res<Time>,
     mut player_query: Query<(&mut Position, &Grounded, &mut Velocity)>,
