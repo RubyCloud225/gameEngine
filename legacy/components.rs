@@ -1,43 +1,44 @@
 // define the components - Data
-use bevy_ecs::prelude::Component;
+use bevy_ecs::prelude::*;
+use std::collections::HashSet;
 // ECS data for movement must be stored by the structs
 // ECS schedule can store all position data together and all velocity data together.
 
-#[derive(Component)]
-struct Position {
-    x: f32,
-    y: f32,
-    z: f32,
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq)]
+pub struct Position {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
-#[derive(Component)]
-struct Velocity {
-    x: f32,
-    y: f32,
-    z: f32,
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq)]
+pub struct Velocity {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
-#[derive(Component)]
-struct Acceleration {
-    x: f32,
-    y: f32,
-    z: f32,
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq)]
+pub struct Acceleration {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
-#[derive(Component)]
-struct Hitbox {
-    width: f32,
-    height: f32,
-    depth: f32,
+#[derive(Component, Clone, Copy, Debug, Default, PartialEq)]
+pub struct Hitbox {
+    pub width: f32,
+    pub height: f32,
+    pub depth: f32,
 }
 
-// to do Time- 
-#[derive(Component)]
-struct Time {
-    delta_seconds: f32, // Time elapsed since the last frame
+// to do Time-
+#[derive(Resource)]
+pub struct Time {
+    pub delta_seconds: f32, // Time elapsed since the last frame
 }
-#[derive(Components)]
-struct FixedPhysics;
+#[derive(Component)]
+pub struct FixedPhysics;
 
 #[derive(Component)]
 pub struct Player;
@@ -66,13 +67,16 @@ pub struct BoundingBox {
 #[derive(Component)]
 pub struct Collidable;
 
-#[derive(Component)]
-pub struct Grounded(pub is_grounded: bool, pub platform: Option<Entity>); // True if the entity is currently resting on a surface
+#[derive(Component, Default, Debug)]
+pub struct Grounded {
+    pub is_grounded: bool,
+    pub platform: Option<Entity>,
+} // True if the entity is currently resting on a surface
 
 pub const MAX_STEP_HEIGHT: f32 = 0.3; // Maximum height the player can step over
-pub const EPSILON: f32 = 0.001: // Small value to prevent floating-point precision issues
+pub const EPSILON: f32 = 0.001; // Small value to prevent floating-point precision issues
 
-#[derive(Component)]
+#[derive(Component, Resource)]
 pub struct StepConfig {
     pub max_height: f32,
 }
@@ -99,22 +103,24 @@ pub struct TriggerTracker {
 }
 #[derive(Component)]
 pub struct OnTriggerEnter {
+    pub actor: Entity,
     pub target_entity: Entity,
 }
 
 #[derive(Component)]
 pub struct OnTriggerExit {
+    pub actor: Entity,
     pub target_entity: Entity,
 }
 #[derive(Component)]
 pub struct OnTriggerStay {
+    pub actor: Entity,
     pub target_entity: Entity,
 }
 
-
 // Collision groups and layers
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct CollisionGroups {
     pub memberships: u32, // current layers this entity belongs to
     pub filters: u32,     // layers this entity collides with
@@ -148,6 +154,7 @@ pub struct DamageResistance {
     pub electric: f32,
 }
 
+#[derive(Clone, Copy, Debug)]
 pub enum DamageType {
     Physical,
     Fire,
@@ -180,8 +187,10 @@ pub struct KnockbackResistance {
 }
 
 // animation and effects
-enum AnimationState {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AnimationState {
     Idle,
+    IdleOnPlatform,
     Walk,
     Run,
     Dash,
@@ -214,18 +223,6 @@ pub struct SprintConfig {
     pub sprint_multiplier: f32,
 }
 
-// walking and running speeds
-#[derive(Component)]
-pub struct MovementSpeed {
-    pub base: f32,
-    pub sprint_multiplier: f32,
-}
-
-#[derive(Component)]
-pub struct Mass {
-    pub value: f32,
-}
-
 #[derive(Component)]
 pub struct MainCamera;
 
@@ -234,4 +231,12 @@ pub struct CameraOffset {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+}
+#[derive(Component)]
+pub struct Dead;
+
+#[derive(Component)]
+pub struct DamageEffect {
+    pub position: Position,
+    pub amount: f32,
 }

@@ -1,0 +1,25 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/engine_core",
+    "crates/ecs",
+    "crates/scheduler",
+    "crates/gpu",
+    "crates/renderer",
+    "crates/physics",
+    "crates/ai",
+    "crates/input",
+    "crates/assets",
+]
+exclude = ["legacy"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "warn"
+
+[workspace.lints.clippy]
+all = "warn"

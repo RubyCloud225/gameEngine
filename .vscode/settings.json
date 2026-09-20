@@ -1,0 +1,8 @@
+{
+  "rust-analyzer.linkedProjects": ["Cargo.toml"],
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.cargo.extraEnv": {"PATH": "${env:HOME}/.cargo/bin:${env:PATH}"},
+  "rust-analyzer.server.extraEnv": {"PATH": "${env:HOME}/.cargo/bin:${env:PATH}"},
+  "terminal.integrated.env.osx": {"PATH": "${env:HOME}/.cargo/bin:${env:PATH}"},
+  "[rust]": {"editor.defaultFormatter": "rust-lang.rust-analyzer"}
+}

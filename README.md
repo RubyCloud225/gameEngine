@@ -5,6 +5,75 @@ around the Entity Component System (ECS) paradigm and data-oriented design.
 Targets maximum CPU cache utilisation and safe multithreading via Rust's
 ownership model.
  
+## Run and test
+
+The root is a Cargo workspace with nine empty subsystem crates: `engine_core`,
+`ecs`, `scheduler`, `gpu`, `renderer`, `physics`, `ai`, `input`, and `assets`.
+Their source modules are registered, but the new engine is not implemented yet.
+The Bevy prototype is preserved as a separate package under `legacy/` and is
+excluded from the new workspace. The new crates have no dependency on it.
+
+```sh
+cargo check --workspace --all-targets
+cargo test --workspace
+cargo fmt --all --check
+cargo clippy --workspace --all-targets -- -D warnings
+```
+
+The empty new crates currently have no behaviour tests. Run the prototype's
+19 existing tests and headless demo explicitly:
+
+```sh
+cargo test --manifest-path legacy/Cargo.toml
+cargo run --manifest-path legacy/Cargo.toml
+cargo test --manifest-path legacy/Cargo.toml triggers
+```
+
+If an already-open terminal cannot find Cargo, run `source "$HOME/.cargo/env"` or
+open a new terminal. In VS Code, run **Developer: Reload Window** after setup.
+The rust-analyzer workspace settings link to the root `Cargo.toml`.
+The empty files under `benchmarks/` remain placeholders, not Cargo benchmark targets.
+
+The legacy library exposes `components`, `resources`, and `systems`. Start with
+`new_world()` to install resources and `physics_schedule()` to construct the
+fixed-step schedule. Call `advance_frame(&mut world, &mut schedule, elapsed_seconds)`
+to run complete 1/60-second ticks. `legacy/main.rs` is a working example;
+`legacy/tests/systems.rs` demonstrates each prototype system independently.
+
+### Legacy prototype systems and conventions
+
+- Movement/input, gravity, acceleration, friction, AABB collision and small step-up.
+- Broad-phase box pairs, spatial-grid rebuilding, collision layers and raycasts.
+- Trigger enter/stay/exit, with actor and target IDs and next-tick event cleanup.
+- Moving-platform carry and one-time momentum transfer on departure.
+- Damage resistance, invulnerability, death markers, damage effects and hit-stop.
+- Animation state selection and blend-request queue, camera shake and time management.
+
+`Position` is the centre of a `Hitbox`; width, height and depth are full dimensions.
+`BoundingBox` min/max values are local offsets from Position. Bodies processed by
+`physics_prediction_systems` need `FixedPhysics`, `Position`, `Velocity`,
+`Acceleration`, `Hitbox` and `Grounded`. Add `AffectedByGravity` for gravity,
+`Collidable` to act as an obstacle, and `TriggerTracker` to receive trigger events.
+`Player` plus `MovementSpeed` enables input-driven horizontal velocity. Resistance
+values are fractions (0–1); friction is the fraction of horizontal velocity retained
+per second while grounded (0 stops, 1 retains all speed).
+
+The simple `movement` and y=0 `collision_resolution_system` are alternatives to the
+full prediction system. Do not schedule both movement implementations on the same
+body. Queue damage in `DamageRequests.events`; collision does not inflict arbitrary
+example damage. Consume trigger events after detection and before the next physics
+tick. `shoot_ray_system` is a query helper called inside a system; rebuild the grid
+before calling it.
+
+Physics uses discrete axis-separated collision, so fast bodies can tunnel through
+thin obstacles. Collider snapshots and raycast candidates currently use straightforward
+scans; the grid is available for future optimization. Moving-platform carry assumes
+kinematic platform velocity and does not implement a rigid-body solver. Animation
+queues blend requests but has no skeletal animation backend. `DamageEffect` entities
+are data for a future effects consumer, which must remove them when finished.
+Components such as inventory, lifetime and knockback do not yet have corresponding
+systems; the existing TODO list remains future work.
+
 ---
  
 ## Design Philosophy
