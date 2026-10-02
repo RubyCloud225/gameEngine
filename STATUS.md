@@ -1,36 +1,79 @@
 # gameEngine — Project Status
 
-Last updated: 2026-09-19
+Last updated: 2026-10-01
 
 ## Current State
 
-The project is being reorganised into a custom, portable, data-oriented Rust game engine.
+The repository recovery and initial architecture phase are complete.
+
+The project is now in:
+
+**Milestone 1 - Custom ECS Foundation**
 
 The architectural direction is now defined in:
 
 * `DESIGN.md`
 * `ROADMAP.md`
 
-The existing prototype code contains useful ideas but is not treated as production-ready engine code.
+The existing prototype code remains available under `legacy/` as reference material only.
+
+---
+## Current Focus
+
+### Milestone 1 - Custom ECS Foundation
+
+Completed:
+
+* [x] Define `Entity`
+* [x] Implement Entity ID's
+* [x] Add generation counters
+* [x] Implement entity allocator
+* [x] Implement entity destruction
+* [x] Detect stale entity handles
+* [x] Add entity lifecycle tests
+
+Current task:
+
+### Component Registration
+
+* [ ] Define component type IDs
+* [ ] Implement component registration
+* [ ] Add typed component storage
+* [ ] Add component insertion
+* [ ] Add component removal
+* [ ] Add component lookup
+* [ ] Add component lifecycle tests
 
 ---
 
-## Current Focus
+## Current Task
 
-### Milestone 0 — Repository Recovery
+Implement Component type identification and registration.
 
-In progress:
+### Objective
 
-* [x] Define overall engine architecture
-* [x] Define long-term roadmap
-* [x] Add AI as a first-class subsystem
-* [x] Define GPU portability strategy
-* [x] Define Xbox as a future platform target
-* [x] Create new repository directory structure
-* [x] Create Cargo workspace
-* [x] Create empty subsystem crates
-* [x] Move prototype code into `legacy/`
-* [x] Confirm the reorganised workspace builds cleanly
+Introduce a mechanism for identifying and registering ECS component types
+
+### Acceptance Criteria
+
+- Each registered component type has a stable identifier
+- Component Registration is type-safe
+- Registered component types can be looked up
+- Duplicate registeration is handled correctly
+- Unit tests cover registration behaviour
+
+### Out of Scope
+
+- World integration
+- Queries
+- Scheduler integration
+- GPU component Storage
+
+### Validation
+
+* [ ] `cargo test --workspace`
+* [ ] `cargo clippy --workspace`
+* [ ] `cargo fmt --check`
 
 ---
 
@@ -44,56 +87,6 @@ At present:
 * development direction is defined.
 
 The old prototype should be treated as reference material rather than as stable engine code.
-
----
-
-## Next Task
-
-Create the new Cargo workspace and subsystem directory structure.
-
-Initial crates:
-
-```text
-engine_core
-ecs
-scheduler
-gpu
-renderer
-physics
-ai
-input
-assets
-```
-
-Then confirm:
-
-```bash
-cargo check --workspace
-```
-
-passes successfully.
-
----
-
-## After That
-
-Begin:
-
-### Milestone 1 — Custom ECS
-
-First implementation task:
-
-```text
-Entity
-  ↓
-Entity allocator
-  ↓
-Generation tracking
-  ↓
-Entity destruction
-```
-
-Do not start component storage until entity lifecycle tests pass.
 
 ---
 
@@ -135,6 +128,24 @@ Small experiments are acceptable when needed to validate an architectural decisi
 * Platform-specific APIs remain isolated
 * Existing prototype code will be preserved under `legacy/`
 
+---
+
+## Milestones Cleared
+
+### Milestone 0 — Repository Recovery
+
+In progress:
+
+* [x] Define overall engine architecture
+* [x] Define long-term roadmap
+* [x] Add AI as a first-class subsystem
+* [x] Define GPU portability strategy
+* [x] Define Xbox as a future platform target
+* [x] Create new repository directory structure
+* [x] Create Cargo workspace
+* [x] Create empty subsystem crates
+* [x] Move prototype code into `legacy/`
+* [x] Confirm the reorganised workspace builds cleanly
 ---
 
 ## Resume Here
