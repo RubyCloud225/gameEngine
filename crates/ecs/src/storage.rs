@@ -30,7 +30,7 @@ impl<T: Component> Storage<T> {
             entities: Vec::new(),
             indices: HashMap::new(),
         }
-    } 
+    }
 
     // Insert or replace 
 }
