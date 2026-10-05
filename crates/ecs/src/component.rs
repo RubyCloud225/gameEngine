@@ -1,9 +1,25 @@
-use std::any::Any;
+use std::{any::{Any, TypeId}, hash::Hash};
+use std::collections::HashMap;
 
 /// Marker trait for data that can be stored as an ECS component.
 /// 
 /// Components should primarily contain data rather than behaviour.
 pub trait Component: Any + Send + Sync + 'static {}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ComponentId(u32);
+
+#[derive(Debug, Default)]
+pub struct ComponentRegistry {
+    types: HashMap<TypeId, ComponentId>,
+    next_id: u32,
+}
+
+impl ComponentRegistry {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 
 /// Automatically make any compatible type a Component
 /// 

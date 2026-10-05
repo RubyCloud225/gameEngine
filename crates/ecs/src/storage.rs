@@ -35,3 +35,9 @@ impl<T: Component> Storage<T> {
     // Insert or replace 
 }
 
+impl<T: Component> Default for Storage<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
