@@ -4,12 +4,12 @@ use crate::entity::Entity;
 use std::collections::HashMap;
 
 /// Stores one component type contiguously.
-/// 
-/// EG: 
+///
+/// EG:
 /// - Storage<Position>
 /// - Storage<Velocity>
 /// - Storage<Health>
-/// 
+///
 /// This can only have one component
 #[derive(Debug)]
 pub struct Storage<T: Component> {
@@ -32,7 +32,7 @@ impl<T: Component> Storage<T> {
         }
     }
 
-    // Insert or replace 
+    // Insert or replace
 }
 
 impl<T: Component> Default for Storage<T> {
@@ -40,4 +40,3 @@ impl<T: Component> Default for Storage<T> {
         Self::new()
     }
 }
-
