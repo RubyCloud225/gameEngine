@@ -21,7 +21,6 @@ impl ComponentRegistry {
     pub fn new() -> Self {
         Self::default()
     }
-    
 }
 
 // Automatically make any compatible type a Component
@@ -45,8 +44,12 @@ mod tests {
     }
 
     struct Health {
-        current: i32,
-        max: i32,
+        current: u32,
+        max: u32,
     }
-    
+
+    struct Npc {
+        current: u32,
+        max: u32,
+    }
 }
