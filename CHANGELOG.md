@@ -2,9 +2,7 @@
 
 ## Unrealeased - 2026-10-07
 
-### Added
-- Function to register component ID which will be attached to the entity created in `entity.rs`
-- add unit tests to validate this.
+
 
 ## Unreleased — 2026-09-20
 
