@@ -36,8 +36,8 @@ Current task:
 
 ### Component Registration
 
-* [ ] Define component type IDs
-* [ ] Implement component registration
+* [x] Define component type IDs
+* [x] Implement component registration
 * [ ] Add typed component storage
 * [ ] Add component insertion
 * [ ] Add component removal
