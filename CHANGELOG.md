@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased — 2026-11-08
+
+### Added
+
+- Root `CONTRIBUTORS.md` crediting project contributors and explaining how to
+  add contributor details.
+- Root `AGENTS.md` documenting repository structure, implementation conventions,
+  validation commands, and Git workflow for coding agents.
+- Root `COMMANDS.md` collecting workspace build, test, formatting, linting,
+  API documentation, legacy prototype, and local Git review commands.
+
+### Changed
+
+- Required coding agents to follow the documented architecture and consult the
+  user before making overarching architectural decisions or changing design
+  direction.
+- Required coding agents to update this changelog after every change, including
+  documentation and configuration changes.
+
 ## Unrealeased - 2026-10-07
 
 Implemented the registration of the component and mapped it to RUST type with unit tests.
