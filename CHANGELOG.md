@@ -1,5 +1,11 @@
 # Changelog
 
+## Unrealeased - 2026-10-07
+
+Implemented the registration of the component and mapped it to RUST type with unit tests.
+
+All tests past and ticket closed.
+
 ## Unreleased — 2026-09-20
 
 ### Added
